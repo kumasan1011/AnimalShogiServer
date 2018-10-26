@@ -1,0 +1,11 @@
+/Users/kumasan/Desktop/lab/software/AnimalShogi/AnimalShogi/bin/Debug/netcoreapp2.1/AnimalShogi.deps.json
+/Users/kumasan/Desktop/lab/software/AnimalShogi/AnimalShogi/bin/Debug/netcoreapp2.1/AnimalShogi.runtimeconfig.json
+/Users/kumasan/Desktop/lab/software/AnimalShogi/AnimalShogi/bin/Debug/netcoreapp2.1/AnimalShogi.runtimeconfig.dev.json
+/Users/kumasan/Desktop/lab/software/AnimalShogi/AnimalShogi/bin/Debug/netcoreapp2.1/AnimalShogi.dll
+/Users/kumasan/Desktop/lab/software/AnimalShogi/AnimalShogi/bin/Debug/netcoreapp2.1/AnimalShogi.pdb
+/Users/kumasan/Desktop/lab/software/AnimalShogi/AnimalShogi/obj/Debug/netcoreapp2.1/AnimalShogi.csprojAssemblyReference.cache
+/Users/kumasan/Desktop/lab/software/AnimalShogi/AnimalShogi/obj/Debug/netcoreapp2.1/AnimalShogi.csproj.CoreCompileInputs.cache
+/Users/kumasan/Desktop/lab/software/AnimalShogi/AnimalShogi/obj/Debug/netcoreapp2.1/AnimalShogi.AssemblyInfoInputs.cache
+/Users/kumasan/Desktop/lab/software/AnimalShogi/AnimalShogi/obj/Debug/netcoreapp2.1/AnimalShogi.AssemblyInfo.cs
+/Users/kumasan/Desktop/lab/software/AnimalShogi/AnimalShogi/obj/Debug/netcoreapp2.1/AnimalShogi.dll
+/Users/kumasan/Desktop/lab/software/AnimalShogi/AnimalShogi/obj/Debug/netcoreapp2.1/AnimalShogi.pdb
