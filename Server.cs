@@ -149,8 +149,9 @@ namespace AnimalShogi
                     listener.Start();
                     Console.WriteLine("Setup is successful. Waiting for clients");
                     matchMaking();
-                } catch(Exception) {
+                } catch(Exception e) {
                     good = false;
+                    Console.WriteLine(e.Message);
                     Console.WriteLine("Try again");
                 }
             } while (good == false);
