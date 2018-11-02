@@ -135,8 +135,6 @@ namespace AnimalShogi
             bool good = true;
 
             do {
-                Console.WriteLine("Enter IP address");
-                string IP = Console.ReadLine();
             
                 do {
                     Console.WriteLine("Enter port");
@@ -144,7 +142,7 @@ namespace AnimalShogi
                 } while(Int32.TryParse(portString, out portInt) == false);
 
                 try {
-                    IPAddress address = IPAddress.Parse(IP);
+                    IPAddress address = IPAddress.Any;
                     listener = new TcpListener(address, portInt);
                     listener.Start();
                     Console.WriteLine("Setup is successful. Waiting for clients");
