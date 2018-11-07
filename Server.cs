@@ -288,7 +288,7 @@ namespace AnimalShogi
                         threadPlayer.Opponent().Stream().Write(win, 0, win.Length);
                         break;
                     }
-                    else if (bufferStr.StartsWith("+") || (bufferStr.StartsWith("-"))) // white move
+                    else if (bufferStr.StartsWith("+") || (bufferStr.StartsWith("-"))) 
                     {
                         // 処理中に対局が無くなると死ぬ
                         int gameIdx = -1;
@@ -305,8 +305,8 @@ namespace AnimalShogi
                         Move move = new Move(bufferStr.Substring(1,6));
 
                         // illegal move
-                        if (   (bufferStr.StartsWith("+") && threadPlayer.MyColor() != Color.WHITE)
-                            || (bufferStr.StartsWith("-") && threadPlayer.MyColor() != Color.BLACK)
+                        if (   (bufferStr.StartsWith("+") && threadPlayer.MyColor() != Color.BLACK)
+                            || (bufferStr.StartsWith("-") && threadPlayer.MyColor() != Color.WHITE)
                             || !games[gameIdx].pos.IsLegalMove(move))
                         {
                             threadPlayer.Stream().Write(illegal, 0, illegal.Length);

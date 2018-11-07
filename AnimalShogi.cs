@@ -97,8 +97,8 @@ namespace AnimalShogi
         }
 
         const string PieceChar = " hzk";
-        const string FileChar  = "abc";
-        const string RankChar  = "123";
+        const string FileChar  = "123";
+        const string RankChar  = " abc";
         public Move(string sfen) {
 
             Console.WriteLine(sfen);
@@ -114,7 +114,7 @@ namespace AnimalShogi
             else {
                 int fFile = FileChar.IndexOf(sfen.Substring(0, 1));
                 int fRank = RankChar.IndexOf(sfen.Substring(1, 1));
-                move = MakeSquare(tFile, tRank) + (MakeSquare(tFile, tRank) << 5); 
+                move = MakeSquare(fFile, fRank) + (MakeSquare(tFile, tRank) << 5); 
                 if (sfen.Substring(4, 1) == "+")
                     move += (1 << 11);
             }
@@ -186,7 +186,7 @@ namespace AnimalShogi
             Console.WriteLine("+---+---+---+");
         }
         public bool IsDrop(Square from) {
-            return from < Square.SQ_05 ? false : true;
+            return from < Square.SQ_05 ? true : false;
         }
 
         public bool IsLegalMove(Move m)
@@ -218,7 +218,7 @@ namespace AnimalShogi
                                                  : (Square.SQ_16 < to && to < Square.SQ_20);
             }
 
-            if (Piece.CanPromote(piece) && promote)
+            if (!Piece.CanPromote(piece) && promote)
               return false;
             
             return true;
