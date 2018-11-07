@@ -44,6 +44,10 @@ namespace AnimalShogi
             return color;
         }
 
+        public bool Waiting() {
+            return waiting;
+        }
+
         public void SetOpponent(Player opp) {
             opponent = opp;
         }
@@ -64,12 +68,17 @@ namespace AnimalShogi
             color = c;
         }
 
+        public void SetWaiting(bool w) {
+            waiting = w;
+        }
+
         private TcpClient tcp;
         private NetworkStream stream;
         private Player opponent;
         private int pID;
         private int gID;
         private bool firstPlayer;
+        private bool waiting;
 
         private Color color;
     }
@@ -106,6 +115,7 @@ namespace AnimalShogi
     public class Server
     {
         static List<Game> games = new List<Game>();
+        static List<Player> players = new List<Player>();
         static readonly object gamesLock = new object();
         TcpListener listener;
         Thread clientThread;
@@ -162,8 +172,8 @@ namespace AnimalShogi
                 // wait for clients to connect
                 client = listener.AcceptTcpClient();
                 nwStream = client.GetStream();
-                Player newPlayer = new Player(client, nwStream, playerID);
-                playerID++;
+                Player newPlayer = new Player(client, nwStream, playerID++);
+                players.Add(newPlayer);
                 clientThread = new Thread(new ParameterizedThreadStart(clientComm));
                 clientThread.Start(newPlayer);
                 addPlayer(newPlayer);
@@ -241,8 +251,7 @@ namespace AnimalShogi
                     bytesRead = threadStream.Read(buffer, 0, 255);
                     string bufferStr = Encoding.UTF8.GetString(buffer);
 
-                    if (!threadPlayer.Opponent().Tcp().Connected)
-                        break;
+                    Console.WriteLine(bufferStr);
 
                     if (!isready && bufferStr.StartsWith("AGREE")) {
                         threadPlayer.Stream().Write(start, 0, start.Length);
@@ -334,6 +343,8 @@ namespace AnimalShogi
                 }
             }
             Console.WriteLine("Player #" + threadPlayer.PlayerId() + " left");
+            threadPlayer.Opponent().Stream().Close();
+            threadPlayer.Opponent().Tcp().Close();
             threadStream.Close();
             threadClient.Close();
 

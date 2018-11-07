@@ -101,9 +101,9 @@ namespace AnimalShogi
         const string RankChar  = "123";
         public Move(string sfen) {
 
-            int tFile = FileChar.IndexOf(sfen.Substring(2, 3));
-            int tRank = RankChar.IndexOf(sfen.Substring(3, 4));
-            bool drop = sfen.Substring(1, 2) == "*";
+            int tFile = FileChar.IndexOf(sfen.Substring(2, 1));
+            int tRank = RankChar.IndexOf(sfen.Substring(3, 1));
+            bool drop = sfen.Substring(1, 1) == "*";
 
             if (drop) {
                 int fKind = PieceChar.IndexOf(sfen.Substring(0, 1));
@@ -111,9 +111,9 @@ namespace AnimalShogi
             }
             else {
                 int fFile = FileChar.IndexOf(sfen.Substring(0, 1));
-                int fRank = RankChar.IndexOf(sfen.Substring(1, 2));
+                int fRank = RankChar.IndexOf(sfen.Substring(1, 1));
                 move = MakeSquare(tFile, tRank) + (MakeSquare(tFile, tRank) << 5); 
-                if (sfen.Substring(4, 5) == "+")
+                if (sfen.Substring(4, 1) == "+")
                     move += (1 << 11);
             }
         }
