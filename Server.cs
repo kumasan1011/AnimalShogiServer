@@ -259,6 +259,13 @@ namespace AnimalShogi
                         continue;
                     }
 
+                    if (threadClient.Client.Poll(1000, SelectMode.SelectRead) && (threadClient.Client.Available == 0)){
+                        break;
+                    }
+
+                    if (threadPlayer.Opponent() == null)
+                        continue;
+
                     // if client clicks cancel
                     if (bytesRead == 0)
                     {
@@ -343,8 +350,11 @@ namespace AnimalShogi
                 }
             }
             Console.WriteLine("Player #" + threadPlayer.PlayerId() + " left");
-            threadPlayer.Opponent().Stream().Close();
-            threadPlayer.Opponent().Tcp().Close();
+            if (threadPlayer.Opponent() != null)
+            {
+                threadPlayer.Opponent().Stream().Close();
+                threadPlayer.Opponent().Tcp().Close();
+            }
             threadStream.Close();
             threadClient.Close();
 
