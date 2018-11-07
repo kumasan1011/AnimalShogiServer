@@ -98,7 +98,7 @@ namespace AnimalShogi
 
         const string PieceChar = " hzk";
         const string FileChar  = "123";
-        const string RankChar  = " abc";
+        const string RankChar  = " abcd";
         public Move(string sfen) {
 
             Console.WriteLine(sfen);
