@@ -101,6 +101,8 @@ namespace AnimalShogi
         const string RankChar  = "123";
         public Move(string sfen) {
 
+            Console.WriteLine(sfen);
+
             int tFile = FileChar.IndexOf(sfen.Substring(2, 1));
             int tRank = RankChar.IndexOf(sfen.Substring(3, 1));
             bool drop = sfen.Substring(1, 1) == "*";

@@ -259,9 +259,10 @@ namespace AnimalShogi
                         continue;
                     }
 
-                    if (threadClient.Client.Poll(1000, SelectMode.SelectRead) && (threadClient.Client.Available == 0)){
+                    if (   threadClient.Client.Connected
+                        && threadClient.Client.Poll(1000, SelectMode.SelectRead) 
+                        && (threadClient.Client.Available == 0))
                         break;
-                    }
 
                     if (threadPlayer.Opponent() == null)
                         continue;
@@ -317,7 +318,7 @@ namespace AnimalShogi
                         }
 
                         // OKを送る
-                        string mStr = (move.Promote() ? bufferStr.Substring(1, 6) : bufferStr.Substring(1, 5)) + ",OK";
+                        string mStr = (move.Promote() ? bufferStr.Substring(1, 5) : bufferStr.Substring(1, 4)) + ",OK";
                         byte[] ok = Encoding.GetEncoding("UTF-8").GetBytes(mStr);
                         threadPlayer.Stream().Write(ok, 0, ok.Length);
                         threadPlayer.Opponent().Stream().Write(ok, 0, ok.Length);
