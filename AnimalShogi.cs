@@ -195,6 +195,13 @@ namespace AnimalShogi
             Square to = m.To(); 
             bool promote = m.Promote();
 
+            // out of range
+            if (   from < Square.SQ_01
+                || from > Square.SQ_19
+                || to   < Square.SQ_01
+                || to   > Square.SQ_19)
+                return false;
+
             if (IsDrop(from))
             {
                 if (promote)
