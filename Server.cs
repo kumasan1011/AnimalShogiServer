@@ -343,10 +343,12 @@ namespace AnimalShogi
                 catch (System.IO.IOException)
                 {
                     // tell opponent game ended
+                    /*
                     if (threadPlayer.Opponent() != null)
                     {
                         threadPlayer.Opponent().Stream().Write(abnormal, 0, abnormal.Length);
                     }
+                    */
                     break;
                 }
             }
