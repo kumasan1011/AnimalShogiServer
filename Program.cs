@@ -7,7 +7,13 @@ namespace AnimalShogi
     {
         static void Main(string[] args)
         {
-            Server server = new Server();
+            if (args.Length != 1)
+            {
+                Console.WriteLine("Args size is error");
+                return;
+            }
+
+            Server server = new Server(args[0]);
         }
     }
 }

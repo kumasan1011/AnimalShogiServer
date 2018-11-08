@@ -133,7 +133,7 @@ namespace AnimalShogi
 
         byte[][] beginSummary;
 
-        public Server()
+        public Server(string port)
         {
             beginSummary = new byte[(int)Color.COLOR_NB][] {
                 Encoding.GetEncoding("UTF-8").GetBytes(beginSummaryStr[(int)Color.BLACK]),
@@ -141,15 +141,15 @@ namespace AnimalShogi
             };
 
             int portInt;
-            string portString = string.Empty;
+            string portString = port;
             bool good = true;
 
             do {
-            
-                do {
+                while(Int32.TryParse(portString, out portInt) == false) 
+                {
                     Console.WriteLine("Enter port");
                     portString = Console.ReadLine();
-                } while(Int32.TryParse(portString, out portInt) == false);
+                }
 
                 try {
                     IPAddress address = IPAddress.Any;
