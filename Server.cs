@@ -275,7 +275,7 @@ namespace AnimalShogi
                             if (threadPlayer.Opponent().Tcp().Connected == true)
                             {
                                 // tell opponent game ended
-                                threadPlayer.Opponent().Stream().Write(abnormal, 0, abnormal.Length);
+                                // threadPlayer.Opponent().Stream().Write(abnormal, 0, abnormal.Length);
                             }
                         }
                         break;
