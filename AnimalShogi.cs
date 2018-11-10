@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 
 /*
   0  1  2  3
@@ -72,6 +73,14 @@ namespace AnimalShogi
 
         public static bool CanPromote(int piece) {
             return (Abs(piece) <=  BR) ? true : false;
+        }
+
+        public static bool IsBlack(int piece) {
+            return (piece & WhiteBit) == 0x00;
+        }
+
+        public static bool IsWhite(int piece) {
+            return (piece & WhiteBit) != 0x00;
         }
 
         public static string[] PieceChar = new string[] 
@@ -215,6 +224,22 @@ namespace AnimalShogi
             // 同じ場所には移動できない
             if (from == to)
               return false;
+
+            // 駒が存在しない、または壁
+            if (   piece == Piece.Empty
+                || piece == Piece.Wall)
+                return false;
+
+            // 自分の駒でない
+            if (   (sideToMove == Color.BLACK && Piece.IsWhite(piece))
+                || (sideToMove == Color.WHITE && Piece.IsBlack(piece)))
+                return false;
+
+            int inc = to - from;
+
+            // 動けない方向に動いている
+            if (!Piece.Inc[piece].Contains(inc))
+                return false;
 
             if (promote)
             {
