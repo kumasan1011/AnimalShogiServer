@@ -317,19 +317,17 @@ namespace AnimalShogi
             square[(int)to] = tKind;
             square[(int)from] = Piece.Empty;
 
+            // トライ勝ち
+            if (Piece.Abs(fKind) == Piece.BK)
+            {
+                if (sideToMove == Color.BLACK && Square.SQ_04 < to && to < Square.SQ_08)
+                  return true;
+                if (sideToMove == Color.WHITE && Square.SQ_16 < to && to < Square.SQ_20)
+                  return true;
+            }
+
             // 手番変更
             sideToMove = (sideToMove == Color.BLACK) ? Color.WHITE : Color.BLACK;
-
-            // トライ勝ち
-            if (sideToMove == Color.BLACK)
-            {
-                if (Square.SQ_04 < to && to < Square.SQ_08)
-                  return true;
-            }
-            else {
-                if (Square.SQ_16 < to && to < Square.SQ_20)
-                  return true;
-            }
 
             return (capture == Piece.BK || capture == Piece.WK) ? true : false;
         }
