@@ -312,6 +312,9 @@ namespace AnimalShogi
                             || (bufferStr.StartsWith("-") && threadPlayer.MyColor() != Color.WHITE)
                             || !games[gameIdx].pos.IsLegalMove(move))
                         {
+                            // DEBUG
+                            games[gameIdx].pos.PrintPosition();
+
                             threadPlayer.Stream().Write(illegal, 0, illegal.Length);
                             threadPlayer.Stream().Write(lose, 0, lose.Length);
                             //tell opponent game ended
