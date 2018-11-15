@@ -97,6 +97,6 @@ Ex. 引き分けで対局終了の場合
 
 ### Ex. 反則手で負けた時
 
-＃ILLEGAL_MOVE
+＃ILLEGAL
 
 ＃LOSE

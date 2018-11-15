@@ -285,8 +285,9 @@ namespace AnimalShogi
                 int cap = square[(int)to];
 
                 // 取るのが相手の駒でない
-                if (   (sideToMove == Color.WHITE && Piece.IsWhite(cap))
-                    || (sideToMove == Color.BLACK && Piece.IsBlack(cap)))
+                if ( cap != Piece.Empty  
+                  && ((sideToMove == Color.WHITE && Piece.IsWhite(cap))
+                  || (sideToMove == Color.BLACK && Piece.IsBlack(cap))))
                     return false;
 
                 int inc = to - from;
