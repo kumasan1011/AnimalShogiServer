@@ -264,6 +264,9 @@ namespace AnimalShogi
                     return false;
                 if (square[(int)to] != Piece.Empty)
                     return false;
+                // 駒を持ってない
+                if (Stand(sideToMove, (int)from) == 0)
+                    return false;
             }
             else {
                 int piece = square[(int)from];
@@ -349,9 +352,9 @@ namespace AnimalShogi
             sideToMove = (sideToMove == Color.BLACK) ? Color.WHITE : Color.BLACK;
         }
 
-        public int Stand(int color, int absKind)
+        public int Stand(Color color, int absKind)
 		{
-			return stand[color][absKind];
+			return stand[(int)color][absKind];
 		}
 		public int KingPos(int color)
 		{
