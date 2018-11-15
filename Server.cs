@@ -357,9 +357,11 @@ namespace AnimalShogi
             {
                 threadPlayer.Opponent().Stream().Close();
                 threadPlayer.Opponent().Tcp().Close();
+                players.Remove(threadPlayer.Opponent());
             }
             threadStream.Close();
             threadClient.Close();
+            players.Remove(threadPlayer);
 
             lock(waitingPlayerLock)
             {
