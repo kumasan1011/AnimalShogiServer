@@ -63,7 +63,7 @@ namespace AnimalShogi
             Piece.WR,   Piece.WK,   Piece.WB,   Piece.Wall,
             Piece.Empty,Piece.WP,   Piece.Empty,Piece.Wall,
             Piece.Empty,Piece.BP,   Piece.Empty,Piece.Wall,
-            Piece.BR,   Piece.BK,   Piece.BB,   Piece.Wall,
+            Piece.BB,   Piece.BK,   Piece.BR,   Piece.Wall,
             Piece.Wall, Piece.Wall, Piece.Wall, Piece.Wall,
         };
 
