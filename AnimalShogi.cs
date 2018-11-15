@@ -71,8 +71,16 @@ namespace AnimalShogi
             return piece & (~WhiteBit);
         }
 
-        public static bool CanPromote(int piece) {
-            return (Abs(piece) ==  BP) ? true : false;
+        public static bool CanPromote(int piece, Square to) {
+
+            if (Abs(piece) !=  BP) 
+              return false;
+
+            if (  (IsBlack(piece) && (Square.SQ_04 < to && to < Square.SQ_08))
+               || (IsWhite(piece) && (Square.SQ_16 < to && to < Square.SQ_20)))
+              return true; 
+            
+            return false;
         }
 
         public static bool IsBlack(int piece) {
@@ -81,6 +89,10 @@ namespace AnimalShogi
 
         public static bool IsWhite(int piece) {
             return (piece & WhiteBit) != 0x00;
+        }
+
+        public static Color ColorIs(int piece) {
+            return IsBlack(piece) ? Color.BLACK : Color.WHITE;
         }
 
         public static string[] PieceChar = new string[] 
@@ -103,6 +115,14 @@ namespace AnimalShogi
     {
         public int MakeSquare(int file, int rank) {
             return 4 * rank + file;
+        }
+
+        public int File(Square sq) {
+            return (int)sq % 4;
+        }
+
+        public int Rank(Square sq) {
+            return (int)sq / 4;
         }
 
         const string PieceChar = " hzk";
@@ -129,8 +149,35 @@ namespace AnimalShogi
             }
         }
 
+        public Move(Square from, Square to, bool promote, bool drop) {
+
+            move = (int)from + ((int)to << 5);
+
+            if (drop) {
+                move += (1 << 10); 
+            }
+            else if (promote)
+                move += (1 << 11);
+        }
+
         public string ToSfen() {
+            
             string str = String.Empty;
+
+            if (Drop()) {
+                str += PieceChar[(int)From()] + "*";
+            }
+            else {
+                str += FileChar[(int)File(From())];
+                str += RankChar[(int)Rank(From())];
+            }
+
+            str += FileChar[(int)File(To())];
+            str += RankChar[(int)Rank(To())]; 
+
+            if (Promote())
+              str += "+";
+
             return str;
         }
 
@@ -248,17 +295,8 @@ namespace AnimalShogi
                 if (!Piece.Inc[piece].Contains(inc))
                     return false;
 
-                if (promote)
-                {
-                    if (Piece.Abs(square[(int)from]) != Piece.BP)
-                    return false; 
-                    
-                    return sideToMove == Color.BLACK ? (Square.SQ_04 < to && to < Square.SQ_08)
-                                                     : (Square.SQ_16 < to && to < Square.SQ_20);
-                }
-
-                if (!Piece.CanPromote(piece) && promote)
-                    return false;
+                if (promote && !Piece.CanPromote(piece, to))
+                  return false; 
             }
             
             return true;
@@ -295,6 +333,23 @@ namespace AnimalShogi
             return (capture == Piece.BK || capture == Piece.WK) ? true : false;
         }
 
+        public void UndoMove(Move m)
+        {
+            Square from = m.From();
+            Square to = m.To(); 
+            bool promote = m.Promote();
+            int fKind =  IsDrop(from) ? sideToMove == Color.BLACK ? (int)from : (int)from + Piece.WhiteBit 
+                                      : square[(int)from];
+            int tKind = fKind + (promote ? Piece.PromoteBit : 0);
+            int capture = square[(int)to];
+
+            square[(int)to] = tKind;
+            square[(int)from] = Piece.Empty;
+
+            // 手番変更
+            sideToMove = (sideToMove == Color.BLACK) ? Color.WHITE : Color.BLACK;
+        }
+
         public int Stand(int color, int absKind)
 		{
 			return stand[color][absKind];
@@ -303,6 +358,17 @@ namespace AnimalShogi
 		{
 			return kingPos[color];
 		}
+
+        public int SquareIs(Square sq)
+        {
+            return square[(int)sq];
+        }
+
+        public Color SideToMove()
+        {
+            return sideToMove;
+        }
+
         public const int SquareSize = 24;
         const int Black = (int)Color.BLACK, White = (int)Color.WHITE; // alias
         
