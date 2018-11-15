@@ -218,40 +218,48 @@ namespace AnimalShogi
                 if (square[(int)to] != Piece.Empty)
                     return false;
             }
+            else {
+                int piece = square[(int)from];
 
-            int piece = square[(int)from];
+                // 同じ場所には移動できない
+                if (from == to)
+                    return false;
 
-            // 同じ場所には移動できない
-            if (from == to)
-              return false;
+                // 駒が存在しない、または壁
+                if (   piece == Piece.Empty
+                    || piece == Piece.Wall)
+                    return false;
 
-            // 駒が存在しない、または壁
-            if (   piece == Piece.Empty
-                || piece == Piece.Wall)
-                return false;
+                // 動かすのが自分の駒でない
+                if (   (sideToMove == Color.BLACK && Piece.IsWhite(piece))
+                    || (sideToMove == Color.WHITE && Piece.IsBlack(piece)))
+                    return false;
+            
+                int cap = square[(int)to];
 
-            // 自分の駒でない
-            if (   (sideToMove == Color.BLACK && Piece.IsWhite(piece))
-                || (sideToMove == Color.WHITE && Piece.IsBlack(piece)))
-                return false;
+                // 取るのが相手の駒でない
+                if (   (sideToMove == Color.WHITE && Piece.IsWhite(cap))
+                    || (sideToMove == Color.BLACK && Piece.IsBlack(cap)))
+                    return false;
 
-            int inc = to - from;
+                int inc = to - from;
 
-            // 動けない方向に動いている
-            if (!Piece.Inc[piece].Contains(inc))
-                return false;
+                // 動けない方向に動いている
+                if (!Piece.Inc[piece].Contains(inc))
+                    return false;
 
-            if (promote)
-            {
-                if (Piece.Abs(square[(int)from]) != Piece.BP)
-                  return false; 
-                
-                return sideToMove == Color.BLACK ? (Square.SQ_04 < to && to < Square.SQ_08)
-                                                 : (Square.SQ_16 < to && to < Square.SQ_20);
+                if (promote)
+                {
+                    if (Piece.Abs(square[(int)from]) != Piece.BP)
+                    return false; 
+                    
+                    return sideToMove == Color.BLACK ? (Square.SQ_04 < to && to < Square.SQ_08)
+                                                     : (Square.SQ_16 < to && to < Square.SQ_20);
+                }
+
+                if (!Piece.CanPromote(piece) && promote)
+                    return false;
             }
-
-            if (!Piece.CanPromote(piece) && promote)
-              return false;
             
             return true;
         }
@@ -269,6 +277,9 @@ namespace AnimalShogi
 
             square[(int)to] = tKind;
             square[(int)from] = Piece.Empty;
+
+            // 手番変更
+            sideToMove = (sideToMove == Color.BLACK) ? Color.WHITE : Color.BLACK;
 
             // トライ勝ち
             if (sideToMove == Color.BLACK)
