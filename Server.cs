@@ -1,8 +1,10 @@
 using System;
+using System.IO;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Text;
 
 namespace AnimalShogi
@@ -156,6 +158,7 @@ namespace AnimalShogi
                     listener = new TcpListener(address, portInt);
                     listener.Start();
                     Console.WriteLine("Setup is successful. Waiting for clients");
+                    MakeHtml();
                     matchMaking();
                 } catch(Exception e) {
                     good = false;
@@ -391,6 +394,26 @@ namespace AnimalShogi
                         }
                     }
                 }
+            }
+        }
+
+        // 暫定的に作成
+        // todo : 修正
+        private async void MakeHtml()
+        {
+            while (true)
+            {
+                string htmlData;
+
+                htmlData = "<!DOCTYPE html>\n";
+                htmlData += "<html>\n";
+                htmlData += "<head> <meta charset=\"utf-8\"/> </head>\n";
+                htmlData += "<body> 接続台数 : " + players.Count + "</body>\n";
+                htmlData += "</html>";
+
+                File.WriteAllText(@"./web/info.html", htmlData);
+
+                await Task.Delay(10000);
             }
         }
     }
