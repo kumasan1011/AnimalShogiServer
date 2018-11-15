@@ -411,7 +411,7 @@ namespace AnimalShogi
                 htmlData += "<body> 接続台数 : " + players.Count + "</body>\n";
                 htmlData += "</html>";
 
-                File.WriteAllText(@"./web/info.html", htmlData);
+                File.WriteAllText(@"./web/index.html", htmlData);
 
                 await Task.Delay(10000);
             }
