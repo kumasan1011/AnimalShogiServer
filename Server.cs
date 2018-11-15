@@ -127,8 +127,8 @@ namespace AnimalShogi
         int gameID = 1;
 
         string[] beginSummaryStr = new string[] {
-            "BEGIN Game_Summary\n" + DateTime.Now.ToString("yyyyMMdd-HH-mm-ss") + "\nYour_Turn:+\nEND Game_Summary\n",
-            "BEGIN Game_Summary\n" + DateTime.Now.ToString("yyyyMMdd-HH-mm-ss") + "\nYour_Turn:-\nEND Game_Summary\n",
+            "BEGIN Game_Summary\nGame_ID:" + DateTime.Now.ToString("yyyyMMdd-HH-mm-ss") + "\nYour_Turn:+\nEND Game_Summary\n",
+            "BEGIN Game_Summary\nGame_ID:" + DateTime.Now.ToString("yyyyMMdd-HH-mm-ss") + "\nYour_Turn:-\nEND Game_Summary\n",
         };
 
         byte[][] beginSummary;
@@ -318,7 +318,7 @@ namespace AnimalShogi
                         }
 
                         // OKを送る
-                        string mStr = (move.Promote() ? bufferStr.Substring(1, 5) : bufferStr.Substring(1, 4)) + ",OK\n";
+                        string mStr = (move.Promote() ? bufferStr.Substring(0, 5) : bufferStr.Substring(0, 4)) + ",OK\n";
                         byte[] ok = Encoding.GetEncoding("UTF-8").GetBytes(mStr);
                         threadPlayer.Stream().Write(ok, 0, ok.Length);
                         threadPlayer.Opponent().Stream().Write(ok, 0, ok.Length);
