@@ -312,13 +312,25 @@ namespace AnimalShogi
             Square to = m.To(); 
             bool promote = m.Promote();
 
-            int fKind =  IsDrop(from) ? sideToMove == Color.BLACK ? (int)from : (int)from + Piece.WhiteBit 
+            int fKind = IsDrop(from) ? sideToMove == Color.BLACK ? (int)from : (int)from + Piece.WhiteBit 
                                       : square[(int)from];
             int tKind = fKind + (promote ? Piece.PromoteBit : 0);
             int capture = square[(int)to];
 
             square[(int)to] = tKind;
-            square[(int)from] = Piece.Empty;
+
+            if (IsDrop(from))
+            {
+                stand[(int)sideToMove][(int)from]--;
+            }
+            else 
+            {
+                square[(int)from] = Piece.Empty;
+                if (capture != Piece.Empty)
+                {
+                    stand[(int)sideToMove][Piece.Abs(capture)]++;
+                }
+            }
 
             // トライ勝ち
             if (Piece.Abs(fKind) == Piece.BK)
