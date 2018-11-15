@@ -318,7 +318,7 @@ namespace AnimalShogi
                         }
 
                         // OKを送る
-                        string mStr = (move.Promote() ? bufferStr.Substring(0, 5) : bufferStr.Substring(0, 4)) + ",OK\n";
+                        string mStr = (move.Promote() ? bufferStr.Substring(0, 6) : bufferStr.Substring(0, 5)) + ",OK\n";
                         byte[] ok = Encoding.GetEncoding("UTF-8").GetBytes(mStr);
                         threadPlayer.Stream().Write(ok, 0, ok.Length);
                         threadPlayer.Opponent().Stream().Write(ok, 0, ok.Length);
