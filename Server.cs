@@ -221,7 +221,7 @@ namespace AnimalShogi
                     //Tell clients to start game
                     waitingPlayer.Stream().Write(beginSummary[(int)waitingPlayer.MyColor()], 0, beginSummary[(int)waitingPlayer.MyColor()].Length);
                     nPlayer.Stream().Write(beginSummary[(int)nPlayer.MyColor()], 0,  beginSummary[(int)nPlayer.MyColor()].Length);
-                    Console.WriteLine("Started game #" + gameID + ", with player #" + waitingPlayer.GameId() + " and player #" + nPlayer.PlayerId());
+                    Console.WriteLine("Started game #" + gameID + ", with player #" + waitingPlayer.PlayerId() + " and player #" + nPlayer.PlayerId());
                     waitingPlayer = null;
                     gameID++;
                 }
