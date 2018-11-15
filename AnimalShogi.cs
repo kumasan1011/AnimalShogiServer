@@ -328,7 +328,12 @@ namespace AnimalShogi
                 square[(int)from] = Piece.Empty;
                 if (capture != Piece.Empty)
                 {
-                    stand[(int)sideToMove][Piece.Abs(capture)]++;
+                    if (Piece.Abs(capture) != Piece.BK) {
+                        if (Piece.Abs(capture) != Piece.BPP)
+                            stand[(int)sideToMove][Piece.Abs(capture)]++;
+                        else
+                            stand[(int)sideToMove][Piece.BP]++;
+                    }
                 }
             }
 
