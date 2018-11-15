@@ -72,7 +72,7 @@ namespace AnimalShogi
         }
 
         public static bool CanPromote(int piece) {
-            return (Abs(piece) <=  BR) ? true : false;
+            return (Abs(piece) ==  BP) ? true : false;
         }
 
         public static bool IsBlack(int piece) {
