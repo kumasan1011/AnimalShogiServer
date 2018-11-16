@@ -229,7 +229,7 @@ namespace AnimalShogi
 
             Console.WriteLine("+---+---+---+");
             str = "|";
-            for (int i = (int)Square.SQ_09; i < (int)Square.SQ_24; ++i)
+            for (int i = (int)Square.SQ_09; i <= (int)Square.SQ_24; ++i)
             {
                 // 壁なら出力して次の行へ
                 if (square[i] == Piece.Wall)
