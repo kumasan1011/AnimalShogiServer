@@ -8,6 +8,8 @@ using System.Linq;
   12 13 14 15
   16 17 18 19
   20 21 22 23
+  24 25 26 27
+  28 29 30 31
 */
 
 namespace AnimalShogi
@@ -23,6 +25,8 @@ namespace AnimalShogi
         SQ_13, SQ_14, SQ_15, SQ_16,
         SQ_17, SQ_18, SQ_19, SQ_20,
         SQ_21, SQ_22, SQ_23, SQ_24,
+        SQ_25, SQ_26, SQ_27, SQ_28,
+        SQ_29, SQ_30, SQ_31, SQ_32,
 
         SQ_NB,
     };
@@ -60,10 +64,12 @@ namespace AnimalShogi
         public static readonly int[] StartPos = new int[]
         {
             Piece.Wall, Piece.Wall, Piece.Wall, Piece.Wall,
+            Piece.Wall, Piece.Wall, Piece.Wall, Piece.Wall,
             Piece.WR,   Piece.WK,   Piece.WB,   Piece.Wall,
             Piece.Empty,Piece.WP,   Piece.Empty,Piece.Wall,
             Piece.Empty,Piece.BP,   Piece.Empty,Piece.Wall,
             Piece.BB,   Piece.BK,   Piece.BR,   Piece.Wall,
+            Piece.Wall, Piece.Wall, Piece.Wall, Piece.Wall,
             Piece.Wall, Piece.Wall, Piece.Wall, Piece.Wall,
         };
 
@@ -76,8 +82,8 @@ namespace AnimalShogi
             if (Abs(piece) !=  BP) 
               return false;
 
-            if (  (IsBlack(piece) && (Square.SQ_04 < to && to < Square.SQ_08))
-               || (IsWhite(piece) && (Square.SQ_16 < to && to < Square.SQ_20)))
+            if (  (IsBlack(piece) && (Square.SQ_08 < to && to < Square.SQ_12))
+               || (IsWhite(piece) && (Square.SQ_20 < to && to < Square.SQ_24)))
               return true; 
             
             return false;
@@ -127,10 +133,8 @@ namespace AnimalShogi
 
         const string PieceChar = " hzk";
         const string FileChar  = "123";
-        const string RankChar  = " abcd";
+        const string RankChar  = "  abcd";
         public Move(string sfen) {
-
-            Console.WriteLine(sfen);
 
             int tFile = FileChar.IndexOf(sfen.Substring(2, 1));
             int tRank = RankChar.IndexOf(sfen.Substring(3, 1));
@@ -216,7 +220,7 @@ namespace AnimalShogi
 
             sideToMove = Color.BLACK;
             kingPos[Black] = (int)Square.SQ_22;
-            kingPos[White] = (int)Square.SQ_06;
+            kingPos[White] = (int)Square.SQ_10;
         }
 
         public void PrintPosition() {
@@ -225,13 +229,13 @@ namespace AnimalShogi
 
             Console.WriteLine("+---+---+---+");
             str = "|";
-            for (int i = (int)Square.SQ_05; i < (int)Square.SQ_21; ++i)
+            for (int i = (int)Square.SQ_09; i < (int)Square.SQ_24; ++i)
             {
                 // 壁なら出力して次の行へ
                 if (square[i] == Piece.Wall)
                 {
                     Console.WriteLine(str);
-                    if (i != (int)Square.SQ_20)
+                    if (i != (int)Square.SQ_24)
                       str = "|";
                     continue;
                 }
@@ -253,9 +257,9 @@ namespace AnimalShogi
 
             // out of range
             if (   from < Square.SQ_01
-                || from > Square.SQ_19
+                || from > Square.SQ_23
                 || to   < Square.SQ_01
-                || to   > Square.SQ_19)
+                || to   > Square.SQ_23)
                 return false;
 
             if (IsDrop(from))
@@ -312,13 +316,13 @@ namespace AnimalShogi
             Square to = m.To(); 
             bool promote = m.Promote();
 
-            int fKind = IsDrop(from) ? sideToMove == Color.BLACK ? (int)from : (int)from + Piece.WhiteBit 
+            int fKind =  IsDrop(from) ? sideToMove == Color.BLACK ? (int)from : (int)from + Piece.WhiteBit 
                                       : square[(int)from];
             int tKind = fKind + (promote ? Piece.PromoteBit : 0);
             int capture = square[(int)to];
 
             square[(int)to] = tKind;
-
+            
             if (IsDrop(from))
             {
                 stand[(int)sideToMove][(int)from]--;
@@ -340,9 +344,9 @@ namespace AnimalShogi
             // トライ勝ち
             if (Piece.Abs(fKind) == Piece.BK)
             {
-                if (sideToMove == Color.BLACK && Square.SQ_04 < to && to < Square.SQ_08)
+                if (sideToMove == Color.BLACK && Square.SQ_08 < to && to < Square.SQ_12)
                   return true;
-                if (sideToMove == Color.WHITE && Square.SQ_16 < to && to < Square.SQ_20)
+                if (sideToMove == Color.WHITE && Square.SQ_20 < to && to < Square.SQ_24)
                   return true;
             }
 
@@ -388,7 +392,7 @@ namespace AnimalShogi
             return sideToMove;
         }
 
-        public const int SquareSize = 24;
+        public const int SquareSize = 32;
         const int Black = (int)Color.BLACK, White = (int)Color.WHITE; // alias
         
         private int[] square = new int[SquareSize];
