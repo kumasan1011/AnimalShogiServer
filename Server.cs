@@ -128,20 +128,8 @@ namespace AnimalShogi
         int playerID = 1;
         int gameID = 1;
 
-        string[] beginSummaryStr = new string[] {
-            "BEGIN Game_Summary\nGame_ID:" + DateTime.Now.ToString("yyyyMMdd-HH-mm-ss") + "\nYour_Turn:+\nEND Game_Summary\n",
-            "BEGIN Game_Summary\nGame_ID:" + DateTime.Now.ToString("yyyyMMdd-HH-mm-ss") + "\nYour_Turn:-\nEND Game_Summary\n",
-        };
-
-        byte[][] beginSummary;
-
         public Server(string port)
         {
-            beginSummary = new byte[(int)Color.COLOR_NB][] {
-                Encoding.GetEncoding("UTF-8").GetBytes(beginSummaryStr[(int)Color.BLACK]),
-                Encoding.GetEncoding("UTF-8").GetBytes(beginSummaryStr[(int)Color.WHITE])
-            };
-
             int portInt;
             string portString = port;
             bool good = true;
@@ -166,6 +154,20 @@ namespace AnimalShogi
                     Console.WriteLine("Try again");
                 }
             } while (good == false);
+        }
+
+        private void WriteStream(NetworkStream stream, string message)
+        {
+            byte[] data = Encoding.GetEncoding("UTF-8").GetBytes(message);
+            stream.Write(data, 0, data.Length);
+        }
+
+        private void SendGameSummary(NetworkStream stream, Color c)
+        {
+            WriteStream(stream, "BEGIN Game_Summary\n");
+            WriteStream(stream, "Game_ID:" + DateTime.Now.ToString("yyyyMMdd-HH-mm-ss") + "\n");
+            WriteStream(stream, "Your_Turn:" + (c == Color.BLACK ? "+" : "-") + "\n");
+            WriteStream(stream, "END Game_Summary\n");
         }
 
         private void matchMaking()
@@ -219,8 +221,8 @@ namespace AnimalShogi
                     }
 
                     //Tell clients to start game
-                    waitingPlayer.Stream().Write(beginSummary[(int)waitingPlayer.MyColor()], 0, beginSummary[(int)waitingPlayer.MyColor()].Length);
-                    nPlayer.Stream().Write(beginSummary[(int)nPlayer.MyColor()], 0,  beginSummary[(int)nPlayer.MyColor()].Length);
+                    SendGameSummary(waitingPlayer.Stream(), waitingPlayer.MyColor());
+                    SendGameSummary(nPlayer.Stream(), nPlayer.MyColor());
                     Console.WriteLine("Started game #" + gameID + ", with player #" + waitingPlayer.PlayerId() + " and player #" + nPlayer.PlayerId());
                     waitingPlayer = null;
                     gameID++;
@@ -236,15 +238,6 @@ namespace AnimalShogi
             TcpClient threadClient = threadPlayer.Tcp();
             NetworkStream threadStream = threadPlayer.Stream();
             byte[] buffer = new byte[255];
-
-            byte[] start = Encoding.GetEncoding("UTF-8").GetBytes("START\n");
-            byte[] abnormal = Encoding.GetEncoding("UTF-8").GetBytes("#ABNORMAL\n");
-            byte[] gameover = Encoding.GetEncoding("UTF-8").GetBytes("#GAME_OVER\n");
-            byte[] illegal = Encoding.GetEncoding("UTF-8").GetBytes("#ILLEGAL\n");
-            byte[] win = Encoding.GetEncoding("UTF-8").GetBytes("#WIN\n");
-            byte[] lose = Encoding.GetEncoding("UTF-8").GetBytes("#LOSE\n");
-            byte[] draw = Encoding.GetEncoding("UTF-8").GetBytes("#DRAW\n");
-
 
             while(true)
             {
@@ -263,13 +256,13 @@ namespace AnimalShogi
                           && threadPlayer.Opponent().Tcp().Connected == true)
                         {
                             // tell opponent game ended
-                            threadPlayer.Opponent().Stream().Write(abnormal, 0, abnormal.Length);
+                            WriteStream(threadPlayer.Opponent().Stream(), "#ABNORMAL\n");
                         }
                         break;
                     }
 
                     if (!isready && bufferStr.StartsWith("AGREE")) {
-                        threadPlayer.Stream().Write(start, 0, start.Length);
+                        WriteStream(threadPlayer.Stream(), "START\n");
                         isready = true;
                         continue;
                     }
@@ -285,9 +278,8 @@ namespace AnimalShogi
                     // resign
                     if (bufferStr.StartsWith("resign"))
                     {
-                        //tell opponent game ended
-                        threadPlayer.Opponent().Stream().Write(gameover, 0, gameover.Length);
-                        threadPlayer.Opponent().Stream().Write(win, 0, win.Length);
+                        WriteStream(threadPlayer.Opponent().Stream(), "#GAME_OVER\n");
+                        WriteStream(threadPlayer.Opponent().Stream(), "#WIN\n");
                         break;
                     }
                     else if (bufferStr.StartsWith("+") || (bufferStr.StartsWith("-"))) 
@@ -314,27 +306,26 @@ namespace AnimalShogi
                             // DEBUG
                             games[gameIdx].pos.PrintPosition();
 
-                            threadPlayer.Stream().Write(illegal, 0, illegal.Length);
-                            threadPlayer.Stream().Write(lose, 0, lose.Length);
+                            WriteStream(threadPlayer.Stream(), "#ILLEGAL\n");
+                            WriteStream(threadPlayer.Stream(), "#LOSE\n");
                             //tell opponent game ended
-                            threadPlayer.Opponent().Stream().Write(gameover, 0, gameover.Length);
-                            threadPlayer.Opponent().Stream().Write(win, 0, win.Length);
+                            WriteStream(threadPlayer.Opponent().Stream(), "#GAME_OVER\n");
+                            WriteStream(threadPlayer.Opponent().Stream(), "#WIN\n");
                             break;
                         }
 
                         // OKを送る
                         string mStr = (move.Promote() ? bufferStr.Substring(0, 6) : bufferStr.Substring(0, 5)) + ",OK\n";
-                        byte[] ok = Encoding.GetEncoding("UTF-8").GetBytes(mStr);
-                        threadPlayer.Stream().Write(ok, 0, ok.Length);
-                        threadPlayer.Opponent().Stream().Write(ok, 0, ok.Length);
+                        WriteStream(threadPlayer.Stream(), mStr);
+                        WriteStream(threadPlayer.Opponent().Stream(), mStr);
                         
                         // do move
                         if (games[gameIdx].pos.DoMove(move)) {
-                            threadPlayer.Stream().Write(gameover, 0, gameover.Length);
-                            threadPlayer.Stream().Write(win, 0, win.Length);
+                            WriteStream(threadPlayer.Stream(), "#GAME_OVER\n");
+                            WriteStream(threadPlayer.Stream(), "#WIN\n");
                             //tell opponent game ended
-                            threadPlayer.Opponent().Stream().Write(gameover, 0, gameover.Length);
-                            threadPlayer.Opponent().Stream().Write(lose, 0, win.Length);
+                            WriteStream(threadPlayer.Opponent().Stream(), "#GAME_OVER\n");
+                            WriteStream(threadPlayer.Opponent().Stream(), "#LOSE\n");
                             break;
                         }
                     }
