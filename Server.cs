@@ -256,6 +256,18 @@ namespace AnimalShogi
 
                     Console.WriteLine(bufferStr);
 
+                    // if client clicks cancel
+                    if (bytesRead == 0)
+                    {
+                        if ( threadPlayer.Opponent() != null
+                          && threadPlayer.Opponent().Tcp().Connected == true)
+                        {
+                            // tell opponent game ended
+                            threadPlayer.Opponent().Stream().Write(abnormal, 0, abnormal.Length);
+                        }
+                        break;
+                    }
+
                     if (!isready && bufferStr.StartsWith("AGREE")) {
                         threadPlayer.Stream().Write(start, 0, start.Length);
                         isready = true;
@@ -270,21 +282,8 @@ namespace AnimalShogi
                     if (threadPlayer.Opponent() == null)
                         continue;
 
-                    // if client clicks cancel
-                    if (bytesRead == 0)
-                    {
-                        if (threadPlayer.Opponent() != null)
-                        {
-                            if (threadPlayer.Opponent().Tcp().Connected == true)
-                            {
-                                // tell opponent game ended
-                                // threadPlayer.Opponent().Stream().Write(abnormal, 0, abnormal.Length);
-                            }
-                        }
-                        break;
-                    }
                     // resign
-                    else if (bufferStr.StartsWith("resign"))
+                    if (bufferStr.StartsWith("resign"))
                     {
                         //tell opponent game ended
                         threadPlayer.Opponent().Stream().Write(gameover, 0, gameover.Length);
@@ -348,13 +347,6 @@ namespace AnimalShogi
                 // Client closed
                 catch (System.IO.IOException)
                 {
-                    // tell opponent game ended
-                    /*
-                    if (threadPlayer.Opponent() != null)
-                    {
-                        threadPlayer.Opponent().Stream().Write(abnormal, 0, abnormal.Length);
-                    }
-                    */
                     break;
                 }
             }
