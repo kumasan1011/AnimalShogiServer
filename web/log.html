@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>shogi.keio.app</title>
+  <style>
+    #log-table {
+      font-family: monospace;
+    }
+
+    .timestamp {
+      color: gray;
+    }
+  </style>
+</head>
+
+<body>
+  <pre>
+    <table id="log-table">
+    </table>
+  </pre>
+</body>
+
+<script>
+  const logTable = document.getElementById('log-table')
+  const socket = new WebSocket('wss://shogi.keio.app/ws/log');
+  socket.addEventListener('message', function (event) {
+    const log = JSON.parse(event.data)
+    if (!log) return
+
+    console.log(log);
+
+    const timestamp = new Date(Number(log['__REALTIME_TIMESTAMP']) / 1000)
+    const message = log['MESSAGE']
+
+    const tr = document.createElement('tr')
+    const timestampTD = document.createElement('td')
+    timestampTD.innerText = timestamp.toString()
+    timestampTD.className = "timestamp"
+    tr.appendChild(timestampTD)
+
+    const messageTD = document.createElement('td')
+    messageTD.innerText = message
+    messageTD.className = "message"
+    tr.appendChild(messageTD)
+
+    logTable.appendChild(tr)
+  });
+</script>
+
+</html>
