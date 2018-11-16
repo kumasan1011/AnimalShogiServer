@@ -251,15 +251,7 @@ namespace AnimalShogi
 
                     // if client clicks cancel
                     if (bytesRead == 0)
-                    {
-                        if ( threadPlayer.Opponent() != null
-                          && threadPlayer.Opponent().Tcp().Connected == true)
-                        {
-                            // tell opponent game ended
-                            WriteStream(threadPlayer.Opponent().Stream(), "#ABNORMAL\n");
-                        }
                         break;
-                    }
 
                     if (!isready && bufferStr.StartsWith("AGREE")) {
                         WriteStream(threadPlayer.Stream(), "START\n");
