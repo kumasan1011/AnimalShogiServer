@@ -289,6 +289,7 @@ namespace AnimalShogi
                         // illegal move
                         if (   (bufferStr.StartsWith("+") && threadPlayer.MyColor() != Color.BLACK)
                             || (bufferStr.StartsWith("-") && threadPlayer.MyColor() != Color.WHITE)
+                            || threadPlayer.MyColor() != games[gameIdx].pos.SideToMove()
                             || !games[gameIdx].pos.IsLegalMove(move))
                         {
                             // DEBUG
