@@ -148,9 +148,10 @@ namespace AnimalShogi
                 int fFile = FileChar.IndexOf(sfen.Substring(0, 1));
                 int fRank = RankChar.IndexOf(sfen.Substring(1, 1));
                 move = MakeSquare(fFile, fRank) + (MakeSquare(tFile, tRank) << 5); 
-                if (sfen.Substring(4, 1) == "+")
-                    move += (1 << 11);
             }
+
+            if (sfen.Substring(4, 1) == "+")
+                move += (1 << 11);
         }
 
         public Move(Square from, Square to, bool promote, bool drop) {
