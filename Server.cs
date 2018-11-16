@@ -260,11 +260,6 @@ namespace AnimalShogi
                         continue;
                     }
 
-                    if (   threadClient.Client.Connected
-                        && threadClient.Client.Poll(1000, SelectMode.SelectRead) 
-                        && (threadClient.Client.Available == 0))
-                        break;
-
                     if (threadPlayer.Opponent() == null)
                         continue;
 
