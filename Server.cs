@@ -160,6 +160,7 @@ namespace AnimalShogi
         {
             byte[] data = Encoding.GetEncoding("UTF-8").GetBytes(message);
             stream.Write(data, 0, data.Length);
+            stream.Flush();
         }
 
         private void SendGameSummary(NetworkStream stream, Color c)
@@ -334,15 +335,13 @@ namespace AnimalShogi
                 }
             }
             Console.WriteLine("Player #" + threadPlayer.PlayerId() + " left");
-            if (threadPlayer.Opponent() != null)
+            if (threadPlayer.Opponent() != null && threadPlayer.Opponent().Tcp().Connected)
             {
                 threadPlayer.Opponent().Stream().Close();
                 threadPlayer.Opponent().Tcp().Close();
-                players.Remove(threadPlayer.Opponent());
             }
             threadStream.Close();
             threadClient.Close();
-            players.Remove(threadPlayer);
 
             lock(waitingPlayerLock)
             {
