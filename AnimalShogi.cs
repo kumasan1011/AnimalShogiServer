@@ -224,18 +224,19 @@ namespace AnimalShogi
             kingPos[White] = (int)Square.SQ_10;
         }
 
-        public void PrintPosition() {
+        public string PrintPosition() {
 
             string str = String.Empty;
+            string posStr = String.Empty;
 
-            Console.WriteLine("+---+---+---+");
+            posStr += "+---+---+---+\n";
             str = "|";
             for (int i = (int)Square.SQ_09; i <= (int)Square.SQ_24; ++i)
             {
                 // 壁なら出力して次の行へ
                 if (square[i] == Piece.Wall)
                 {
-                    Console.WriteLine(str);
+                    posStr += str + "\n";
                     if (i != (int)Square.SQ_24)
                       str = "|";
                     continue;
@@ -244,8 +245,21 @@ namespace AnimalShogi
                 str += Piece.PieceChar[square[i]];
                 str += "|";
             }
-            Console.WriteLine("+---+---+---+");
+            posStr += "+---+---+---+\n";
+
+            posStr += "BLACK : ";
+            for (int p = Piece.BP; p < Piece.BK; ++p)
+                if (Stand(Color.BLACK, p) != 0)
+                    posStr += Piece.PieceChar[p] + Stand(Color.BLACK, p);
+            posStr += "\n";
+            posStr += "WHITE : ";
+            for (int p = Piece.BP; p < Piece.BK; ++p)
+                if (Stand(Color.WHITE, p) != 0)
+                    posStr += Piece.PieceChar[p] + Stand(Color.WHITE, p);
+
+            return posStr;
         }
+
         public bool IsDrop(Square from) {
             return from < Square.SQ_05 ? true : false;
         }

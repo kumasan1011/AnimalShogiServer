@@ -93,6 +93,7 @@ namespace AnimalShogi
             this.player1 = one;
             this.player2 = two;
             this.id = i;
+            this.date = DateTime.Now.ToString("yyyyMMdd-HH-mm-ss");
         }
 
         public Player Player1() {
@@ -107,11 +108,16 @@ namespace AnimalShogi
             return id;
         }
 
+        public string Date() {
+            return date;
+        }
+
         public Position pos;
 
         private Player player1;
         private Player player2;
         private int id;
+        private string date;
     }
 
     public class Server
@@ -163,10 +169,10 @@ namespace AnimalShogi
             stream.Flush();
         }
 
-        private void SendGameSummary(NetworkStream stream, Color c)
+        private void SendGameSummary(NetworkStream stream, Color c, string d)
         {
             WriteStream(stream, "BEGIN Game_Summary\n");
-            WriteStream(stream, "Game_ID:" + DateTime.Now.ToString("yyyyMMdd-HH-mm-ss") + "\n");
+            WriteStream(stream, "Game_ID:" + d + "\n");
             WriteStream(stream, "Your_Turn:" + (c == Color.BLACK ? "+" : "-") + "\n");
             WriteStream(stream, "END Game_Summary\n");
         }
@@ -216,14 +222,16 @@ namespace AnimalShogi
                         waitingPlayer.SetColor(Color.BLACK);
                     }
 
+                    Game g = new Game(waitingPlayer, nPlayer, gameID);
+
                     lock (gamesLock)
                     {
-                        games.Add(new Game(waitingPlayer, nPlayer, gameID));
+                        games.Add(g);
                     }
 
                     //Tell clients to start game
-                    SendGameSummary(waitingPlayer.Stream(), waitingPlayer.MyColor());
-                    SendGameSummary(nPlayer.Stream(), nPlayer.MyColor());
+                    SendGameSummary(waitingPlayer.Stream(), waitingPlayer.MyColor(), g.Date());
+                    SendGameSummary(nPlayer.Stream(), nPlayer.MyColor(), g.Date());
                     Console.WriteLine("Started game #" + gameID + ", with player #" + waitingPlayer.PlayerId() + " and player #" + nPlayer.PlayerId());
                     waitingPlayer = null;
                     gameID++;
@@ -292,7 +300,7 @@ namespace AnimalShogi
                             || !games[gameIdx].pos.IsLegalMove(move))
                         {
                             // DEBUG
-                            games[gameIdx].pos.PrintPosition();
+                            Console.WriteLine(games[gameIdx].pos.PrintPosition());
 
                             WriteStream(threadPlayer.Stream(), "#ILLEGAL\n");
                             WriteStream(threadPlayer.Stream(), "#LOSE\n");
@@ -379,8 +387,22 @@ namespace AnimalShogi
 
                 htmlData = "<!DOCTYPE html>\n";
                 htmlData += "<html>\n";
-                htmlData += "<head> <meta charset=\"utf-8\"/> </head>\n";
-                htmlData += "<body> 接続台数 : " + players.Count + "</body>\n";
+                htmlData += "<head>";
+                htmlData += "<meta charset=\"utf-8\"/>";
+                htmlData += "<link rel=\"stylesheet\" href=\"style.css\" type=\"text/css\">";
+                htmlData += "</head>\n";
+                htmlData += "<body> 接続台数 : " + players.Count + "<br>\n";
+
+                htmlData += "<p class=\"game-table\">\n";
+                foreach (Game g in games)
+                {
+                    htmlData += "Game ID : " + g.Date() + "<br>\n";
+                    htmlData += g.pos.PrintPosition().Replace("\n", "<br>\n").Replace(" ", "&nbsp") + "<br>\n";
+                }
+
+                htmlData += "</p>\n";
+
+                htmlData += "</body>\n";
                 htmlData += "</html>";
 
                 File.WriteAllText(@"./web/index.html", htmlData);
