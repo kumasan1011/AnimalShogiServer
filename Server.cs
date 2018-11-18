@@ -234,18 +234,17 @@ namespace AnimalShogi
         private void clientComm(object p)
         {
             bool isready = false;
-            int bytesRead;
             Player threadPlayer = (Player)p;
             TcpClient threadClient = threadPlayer.Tcp();
             NetworkStream threadStream = threadPlayer.Stream();
-            byte[] buffer = new byte[255];
 
             while(true)
             {
                 // wait for data to come in
                 try
                 {
-                    bytesRead = threadStream.Read(buffer, 0, 255);
+                    byte[] buffer = new byte[255];
+                    int bytesRead = threadStream.Read(buffer, 0, 255);
                     string bufferStr = Encoding.UTF8.GetString(buffer);
 
                     Console.WriteLine(bufferStr);
