@@ -131,6 +131,7 @@ namespace AnimalShogi
         NetworkStream nwStream;
         static Player waitingPlayer = null;
         static readonly object waitingPlayerLock = new object();
+        static readonly object playerLock = new object();
         int playerID = 1;
         int gameID = 1;
 
@@ -355,6 +356,11 @@ namespace AnimalShogi
                         waitingPlayer = null;
                     }
                 }
+            }
+
+            lock(playerLock)
+            {
+                players.RemoveAll(x => x.PlayerId() == threadPlayer.PlayerId());
             }
             
             // find game from gameID and see if can remove from list
