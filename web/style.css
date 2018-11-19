@@ -1,3 +1,7 @@
-p.game-table {
-  font-family: "Courier New", Consolas, monospace;
+.game-table {
+  font-family: "Courier New", "Consolas", monospace;
+}
+
+td.timestamp {
+  color: gray;
 }
