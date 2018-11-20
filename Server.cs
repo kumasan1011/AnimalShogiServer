@@ -16,6 +16,7 @@ namespace AnimalShogi
             this.tcp = c;
             this.stream = n;
             this.pID = i;
+            this.name = "Guest_" + i;
         }
 
         public TcpClient Tcp() {
@@ -50,6 +51,10 @@ namespace AnimalShogi
             return waiting;
         }
 
+        public string Name() {
+            return name;
+        }
+
         public void SetOpponent(Player opp) {
             opponent = opp;
         }
@@ -74,6 +79,10 @@ namespace AnimalShogi
             waiting = w;
         }
 
+        public void SetName(string s) {
+            name = s;
+        }
+
         private TcpClient tcp;
         private NetworkStream stream;
         private Player opponent;
@@ -83,6 +92,7 @@ namespace AnimalShogi
         private bool waiting;
 
         private Color color;
+        private string name;
     }
 
     public class Game
@@ -262,6 +272,24 @@ namespace AnimalShogi
                     if (bytesRead == 0)
                         break;
 
+                    if (bufferStr.StartsWith("LOGIN"))
+                    {
+                        string s = bufferStr.Substring(0, bytesRead);
+                        string[] temp = s.Split(' ');
+                        if (temp.Length > 1)
+                        {
+                            string name = temp[1].Trim();
+                            Console.WriteLine("LOGIN:" + name + ",ok\n");
+                            WriteStream(threadPlayer.Stream(), "LOGIN:" + name + ",ok\n");
+                            threadPlayer.SetName(name);
+                        }
+                        else {
+                            WriteStream(threadPlayer.Stream(), "Please LOGIN like \"LOGIN UserName\"\n");
+                        }
+                        
+                        continue;
+                    }
+
                     if (!isready && bufferStr.StartsWith("AGREE")) {
                         WriteStream(threadPlayer.Stream(), "START\n");
                         isready = true;
@@ -398,6 +426,12 @@ namespace AnimalShogi
                 htmlData += "<link rel=\"stylesheet\" href=\"style.css\" type=\"text/css\">";
                 htmlData += "</head>\n";
                 htmlData += "<body> 接続台数 : " + players.Count + "<br>\n";
+                htmlData += "User List<br>\n";
+
+                foreach (Player p in players)
+                {
+                    htmlData += "Player Name : " + p.Name() + "<br>\n";
+                }
 
                 htmlData += "<p class=\"game-table\">\n";
                 foreach (Game g in games)
