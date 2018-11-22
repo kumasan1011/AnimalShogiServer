@@ -275,7 +275,7 @@ namespace AnimalShogi
                     if (bufferStr.StartsWith("LOGIN"))
                     {
                         string s = bufferStr.Substring(0, bytesRead);
-                        string[] temp = s.Split(' ');
+                        string[] temp = s.Split(':');
                         if (temp.Length > 1)
                         {
                             string name = temp[1].Trim();
