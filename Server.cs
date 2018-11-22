@@ -266,7 +266,7 @@ namespace AnimalShogi
                     int bytesRead = threadStream.Read(buffer, 0, 255);
                     string bufferStr = Encoding.UTF8.GetString(buffer);
 
-                    Console.WriteLine(bufferStr);
+                    Console.WriteLine(threadPlayer.Name() + bufferStr);
 
                     // if client clicks cancel
                     if (bytesRead == 0)
@@ -286,7 +286,7 @@ namespace AnimalShogi
                         else {
                             WriteStream(threadPlayer.Stream(), "Please LOGIN like \"LOGIN UserName\"\n");
                         }
-                        
+
                         continue;
                     }
 
