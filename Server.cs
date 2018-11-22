@@ -266,7 +266,7 @@ namespace AnimalShogi
                     int bytesRead = threadStream.Read(buffer, 0, 255);
                     string bufferStr = Encoding.UTF8.GetString(buffer);
 
-                    Console.WriteLine(threadPlayer.Name() + bufferStr);
+                    Console.WriteLine(threadPlayer.Name() + ">" + bufferStr);
 
                     // if client clicks cancel
                     if (bytesRead == 0)
