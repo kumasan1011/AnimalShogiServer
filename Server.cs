@@ -195,7 +195,7 @@ namespace AnimalShogi
                 // wait for clients to connect
                 client = listener.AcceptTcpClient();
                 // keep-alive
-                client.Client.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReceiveTimeout, 10000);
+                client.Client.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReceiveTimeout, 60000);
                 nwStream = client.GetStream();
                 Player newPlayer = new Player(client, nwStream, playerID++);
                 players.Add(newPlayer);
