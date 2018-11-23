@@ -371,23 +371,6 @@ namespace AnimalShogi
             return (capture == Piece.BK || capture == Piece.WK) ? true : false;
         }
 
-        public void UndoMove(Move m)
-        {
-            Square from = m.From();
-            Square to = m.To(); 
-            bool promote = m.Promote();
-            int fKind =  IsDrop(from) ? sideToMove == Color.BLACK ? (int)from : (int)from + Piece.WhiteBit 
-                                      : square[(int)from];
-            int tKind = fKind + (promote ? Piece.PromoteBit : 0);
-            int capture = square[(int)to];
-
-            square[(int)to] = tKind;
-            square[(int)from] = Piece.Empty;
-
-            // 手番変更
-            sideToMove = (sideToMove == Color.BLACK) ? Color.WHITE : Color.BLACK;
-        }
-
         public int Stand(Color color, int absKind)
 		{
 			return stand[(int)color][absKind];
